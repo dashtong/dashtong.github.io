@@ -101,11 +101,6 @@
 </script>
 
 <body>
-  <audio id="audio_beep" src="beep.mp3"></audio>
-  <audio id="audio_stop" src="stop.mp3"></audio>
-  <audio id="audio_winning" src="winning.mp3"></audio>
-  <audio id="audio_end" src="end.mp3"></audio>
-
   <table id="main_table" width="1300" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
       <td>
@@ -514,6 +509,7 @@
           }
         }
         else if (current_time == 0 && total_duration > 0) {
+          play("stop");
           current_time = total_duration;
           time_used = 0;
           master_timing_status = "Game Time Remaining..."
@@ -705,22 +701,29 @@
       reset();
     }
 
+    //   <audio id="audio_beep" src="beep.mp3"></audio>
+    // <audio id="audio_stop" src="stop.mp3"></audio>
+    // <audio id="audio_winning" src="winning.mp3"></audio>
+    // <audio id="audio_end" src="end.mp3"></audio>
+
+    const soundEffect = new Audio();
+    soundEffect.autoplay = true;
+    soundEffect.src = "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
     function play(fld) {
       switch (fld) {
         case "beep":
-          var audio = document.getElementById("audio_beep");
+          soundEffect.src = 'beep.mp3';
           break;
         case "stop":
-          var audio = document.getElementById("audio_stop");
+          soundEffect.src = 'stop.mp3';
           break;
         case "winning":
-          var audio = document.getElementById("audio_winning");
+          soundEffect.src = 'winning.mp3';
           break;
         case "end":
-          var audio = document.getElementById("audio_end");
+          soundEffect.src = 'end.mp3';
           break;
       }
-      audio.play();
     }
 
   </script>
