@@ -1,0 +1,729 @@
+<html>
+<title>Robocon 2022</title>
+
+<meta http-equiv="Content-Type" content="text/html;charset=big5">
+
+<style type="text/css">
+  body,
+  td,
+  th {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    font-size: 16px;
+  }
+
+  select#redTeamName {
+    background-color: #A83025;
+    width: 220px;
+    height: 120px;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    font-family: tahoma, sans-serif;
+  }
+
+  select#blueTeamName {
+    background-color: #264D7D;
+    width: 220px;
+    height: 120px;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    font-family: tahoma, sans-serif;
+  }
+
+  button {
+    border: none;
+    padding: 10px 15px;
+    font-family: tahoma, sans-serif;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 4px;
+    background-color: transparent;
+    transition-duration: 0.4s;
+  }
+
+  button:hover {
+    background-color: #F9E79F;
+  }
+
+  button:disabled {
+    //background-color: #B7950B;
+    opacity: 0.5;
+    background-color: transparent;
+  }
+
+  button#gameTimer:disabled {
+    opacity: 0.5;
+    background-color: transparent;
+  }
+
+  button#pause:disabled {
+    opacity: 0.5;
+    background-color: transparent;
+  }
+
+  button#reset:disabled {
+    opacity: 0.5;
+    background-color: transparent;
+  }
+</style>
+
+<script type="text/javascript">
+  document.onkeydown = checkShortcuts;
+
+  function checkShortcuts(event) {
+    switch (event.keyCode) {
+      case 65:
+        scoring(1, 'red');
+        break;
+      case 83:
+        scoring(2, 'red');
+        break;
+      case 90:
+        greatVictory('red');
+        break;
+
+      case 89:
+        scoring(1, 'blue');
+        break;
+      case 85:
+        scoring(2, 'blue');
+        break;
+      case 76:
+        greatVictory('blue');
+        break;
+    }
+  }
+</script>
+
+<body>
+  <audio id="audio_beep" src="beep.wav"></audio>
+  <audio id="audio_stop" src="stop.wav"></audio>
+  <audio id="audio_winning" src="winning.wav"></audio>
+  <audio id="audio_end" src="end.wav"></audio>
+
+  <table id="main_table" width="1300" border="0" align="center" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table border="1" align="center" cellpadding="2" cellspacing="1" width="100%">
+          <tr>
+            <td width="20%" valign="top" align="left">
+              <table border="0" bgcolor="#F2F3F4" align="center" cellpadding="1" cellspacing="0" width="100%">
+                <tr bgcolor="#EAEDED">
+                  <td align="center">
+                    <div id="status" style="font-size:14px">Timer</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <div id="timer" style="font-size:100px; font-weight:bold">---<div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <div id="timer_unit" style="font-size:14px">sec</div><br>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td width="40%" bgcolor="#A83025" valign="top" align="center">
+              <table border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <br>
+                    <font color="white">Current Score</font>
+                    <font color="white">
+                      <div id="redTeamScore" style="font-size:100px; font-weight:bold">0</div>
+                    </font>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td width="40%" bgcolor="#264D7D" valign="top" align="center">
+              <table border="0" align="center" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <br>
+                    <font color="white">Current Score</font>
+                    <font color="white">
+                      <div id="blueTeamScore" style="font-size:100px; font-weight:bold">0</div>
+                    </font>
+                  </td>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" align="center">Lagori Break</td>
+      <td bgcolor="#A83025" valign="center" align="center">
+        <button id="redLagoriBreak" style="height:100%; width:100%" onClick="scoring('break', 'red')" disabled>Break +1
+          <font color="white">
+            <div id="redLagoriBreakNum" style="font-size:14px">&nbsp;</div>
+            <div id="redLagoriBreakAll" style="font-size:14px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+      <td bgcolor="#264D7D" valign="center" align="center">
+        <button id="blueLagoriBreak" style="height:100%; width:100%" onClick="scoring('break', 'blue')" disabled>Break
+          +1
+          <font color="white">
+            <div id="blueLagoriBreakNum" style="font-size:14px">&nbsp;</div>
+            <div id="blueLagoriBreakAll" style="font-size:14px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" align="center">Lagori Pile</td>
+      <td bgcolor="#A83025" valign="center" align="center">
+        <button id="redLagoriPile" style="height:100%; width:100%" onClick="scoring('pile', 'red')" disabled>Pile +1
+          <font color="white">
+            <div id="redLagoriPileNum" style="font-size:14px">&nbsp;</div>
+            <div id="redLagoriPileAll" style="font-size:14px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+      <td bgcolor="#264D7D" valign="center" align="center">
+        <button id="blueLagoriPile" style="height:100%; width:100%" onClick="scoring('pile', 'blue')" disabled>Pile +1
+          <font color="white">
+            <div id="blueLagoriPileNum" style="font-size:14px">&nbsp;</div>
+            <div id="blueLagoriPileAll" style="font-size:14px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" align="center">&nbsp;</td>
+      <td bgcolor="#A83025" valign="bottom" align="center">
+        <button id="redShotButton" style="height:100%; width:100%" onClick="shotByOther('red')" disabled>Shot by other
+          <font color="white">
+            <div id="redTeamShot" style="font-size:18px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+      <td bgcolor="#264D7D" valign="bottom" align="center">
+        <button id="blueShotButton" style="height:100%; width:100%" onClick="shotByOther('blue')" disabled>Shot by other
+          <font color="white">
+            <div id="blueTeamShot" style="font-size:18px">&nbsp;</div>
+          </font>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" align="center">&nbsp;</td>
+      <td bgcolor="#A83025" valign="bottom" align="center">
+        <div id="redPerfectLagoriButton" style="padding: 10px 15px; font-family: tahoma, sans-serif; color: white;">End
+          Game Time
+          <font color="white">
+            <div id="redTeamPerfectLagori" style="font-size:18px">&nbsp;</div>
+          </font>
+        </div>
+      </td>
+      <td bgcolor="#264D7D" valign="bottom" align="center">
+        <div id="bluePerfectLagoriButton" style="padding: 10px 15px; font-family: tahoma, sans-serif; color: white;">End
+          Game Time
+          <font color="white">
+            <div id="blueTeamPerfectLagori" style="font-size:18px">&nbsp;</div>
+          </font>
+        </div>
+      </td>
+    </tr>
+
+  </table><br>
+  <table border="0" align="center" cellpadding="2" cellspacing="1" width="100%">
+    <tr>
+      <td align="left">
+        <table border="1" align="left" cellpadding="2" cellspacing="1" width="60%">
+          <tr bgcolor="#48C9B0">
+            <td align="center">Game Timer w/ Ready time (60s + 90s + 60s + 90s)</td>
+            <td align="center">
+              <button id="gameTimerFull" onClick="initTimer('full', 'Setup Time Remaining...')">Start</button>
+              <button id="pauseFull" onClick="pause('full')" disabled>Pause</button>
+              <!-- <button id="resetFull" onClick="reset()" disabled>Reset</button> -->
+            </td>
+          </tr>
+          <tr bgcolor="#48C9B0">
+            <td align="center">Game Timer (90s + 60s + 90s)</td>
+            <td align="center">
+              <button id="gameTimerGame" onClick="initTimer('game', 'Game Time Remaining...')">Start</button>
+              <button id="pauseGame" onClick="pause('game')" disabled>Pause</button>
+              <!-- <button id="resetGame" onClick="reset()" disabled>Reset</button> -->
+            </td>
+          </tr>
+          <tr bgcolor="#48C9B0">
+            <td align="center">Practice Timer (90s)</td>
+            <td align="center">
+              <button id="gameTimerPractice" onClick="initTimer('practice', 'Game Time Remaining...')">Start</button>
+              <button id="pausePractice" onClick="pause('practice')" disabled>Pause</button>
+              <!-- <button id="resetPractice" onClick="reset()" disabled>Reset</button> -->
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center" bgcolor="#E6B0AA"><button id="newGame" style="height:100%; width:100%"
+                onClick="newGame()">End & Start New Game</button></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    </td>
+    </tr>
+  </table>
+
+  <script>
+    var master_timer;
+    var master_timing_status;
+    var isPause;
+    var total_duration;
+    var current_time;
+    var time_used;
+
+    var redTeamScore;
+    var blueTeamScore;
+
+    var redTeamLagoriBreakCount;
+    var blueTeamLagoriBreakCount;
+    var redTeamLagoriPileCount;
+    var blueTeamLagoriPileCount;
+
+    var overallType;
+    var repeatTime;
+    var updated_once;
+    var updated_once_1;
+    var pileStage;
+    var isEnd;
+
+    isPause = true;
+    total_duration = 240;
+    current_time = 60;
+    time_used = 0;
+    master_timing_status = "Setup Time Remaining...";
+
+    redTeamScore = 0;
+    blueTeamScore = 0;
+
+    redTeamLagoriBreakCount = 0;
+    blueTeamLagoriBreakCount = 0;
+    redTeamLagoriPileCount = 0;
+    blueTeamLagoriPileCount = 0;
+    repeatTime = 1;
+    overallType = 'full';
+    updated_once = true;
+    updated_once_1 = true;
+    pileStage = false;
+    isEnd = false;
+
+    function showTime(teamColor) {
+      switch (teamColor) {
+        case "red":
+          // play("winning");
+          document.getElementById("redTeamPerfectLagori").innerHTML = time_used + " s";
+          break;
+        case "blue":
+          // play("winning");
+          document.getElementById("blueTeamPerfectLagori").innerHTML = time_used + " s";
+          break;
+      }
+    }
+
+    function checkGreatVictory(teamColor) {
+      switch (teamColor) {
+        case "red":
+          if (redTeamPot1TwinningCount >= 1 && redTeamPot2TwinningCount >= 1) {
+            greatVictory(teamColor);
+          }
+          break;
+        case "blue":
+          if (blueTeamPot1TwinningCount >= 1 && blueTeamPot2TwinningCount >= 1) {
+            greatVictory(teamColor);
+          }
+          break;
+      }
+    }
+
+    function scoring(lagoriType, teamColor) {
+      switch (teamColor) {
+        case "red":
+          if (lagoriType == "break" && redTeamLagoriBreakCount < 5) {
+            redTeamScore += 5;
+            redTeamLagoriBreakCount += 1;
+            if (redTeamLagoriBreakCount == 5) document.getElementById("redLagoriBreakAll").innerHTML = "Break All Lagori [@ " + time_used + " sec]";
+            document.getElementById("redLagoriBreakNum").innerHTML = "Number of Lagori: " + redTeamLagoriBreakCount;
+          }
+          else if (lagoriType == "pile" && redTeamLagoriPileCount < 5) {
+            redTeamScore += 10;
+            redTeamLagoriPileCount += 1;
+            if (redTeamLagoriPileCount == 5) document.getElementById("redLagoriPileAll").innerHTML = "Break All Lagori [@ " + time_used + " sec]";
+            document.getElementById("redLagoriPileNum").innerHTML = "Number of Lagori: " + redTeamLagoriPileCount;
+          }
+          document.getElementById("redTeamScore").innerHTML = redTeamScore;
+          if (redTeamLagoriBreakCount == 5 && redTeamLagoriPileCount == 5) showTime("red");
+          break;
+        case "blue":
+          if (lagoriType == "break" && blueTeamLagoriBreakCount < 5) {
+            blueTeamScore += 5;
+            blueTeamLagoriBreakCount += 1;
+            if (blueTeamLagoriBreakCount == 5) document.getElementById("blueLagoriBreakAll").innerHTML = "Break All Lagori [@ " + time_used + " sec]";
+            document.getElementById("blueLagoriBreakNum").innerHTML = "Number of Lagori: " + blueTeamLagoriBreakCount;
+          }
+          else if (lagoriType == "pile" && blueTeamLagoriPileCount < 5) {
+            blueTeamScore += 10;
+            blueTeamLagoriPileCount += 1;
+            if (blueTeamLagoriPileCount == 5) document.getElementById("blueLagoriPileAll").innerHTML = "Break All Lagori [@ " + time_used + " sec]";
+            document.getElementById("blueLagoriPileNum").innerHTML = "Number of Lagori: " + blueTeamLagoriPileCount;
+          }
+          document.getElementById("blueTeamScore").innerHTML = blueTeamScore;
+          if (blueTeamLagoriBreakCount == 5 && blueTeamLagoriPileCount == 5) showTime("blue");
+          break;
+      }
+    }
+
+    function reset() {
+      clearTimeout(master_timer);
+      document.getElementById("timer").style.color = "black";
+      document.getElementById("timer").innerHTML = "---";
+      document.getElementById("timer_unit").style.color = "black";
+      document.getElementById("timer_unit").innerHTML = "sec";
+
+      document.getElementById("pauseFull").innerHTML = "Pause";
+      document.getElementById("pauseGame").innerHTML = "Pause";
+      document.getElementById("pausePractice").innerHTML = "Pause";
+      isPause = true;
+      total_duration = 240;
+      current_time = 60;
+      time_used = 0;
+      overallType = 'full';
+      repeatTime = 1;
+      updated_once = true;
+      pileStage = false;
+      isEnd = false;
+      updated_once_1 = true;
+      master_timing_status = "Setup Time Remaining...";
+
+      document.getElementById("status").innerHTML = "Timer";
+
+      document.getElementById("gameTimerFull").disabled = false;
+      document.getElementById("gameTimerGame").disabled = false;
+      document.getElementById("gameTimerPractice").disabled = false;
+      document.getElementById("pauseFull").disabled = true;
+      document.getElementById("pauseGame").disabled = true;
+      document.getElementById("pausePractice").disabled = true;
+      // document.getElementById("resetFull").disabled = true;
+      // document.getElementById("resetGame").disabled = true;
+      // document.getElementById("resetPractice").disabled = true;
+
+      document.getElementById("redLagoriBreak").disabled = true;
+      document.getElementById("redLagoriPile").disabled = true;
+      document.getElementById("redShotButton").disabled = true;
+      document.getElementById("blueLagoriBreak").disabled = true;
+      document.getElementById("blueLagoriPile").disabled = true;
+      document.getElementById("blueShotButton").disabled = true;
+    }
+
+    function initTimer(type, current_timing_status) {
+      switch (type) {
+        case 'full':
+          current_time = 60;
+          total_duration = 150;
+          repeatTime = 1;
+          break;
+        case 'game':
+          current_time = 0;
+          total_duration = 90;
+          repeatTime = 1;
+          break;
+        case 'practice':
+          current_time = 0;
+          total_duration = 90;
+          repeatTime = 0;
+          break;
+      }
+      countdown(type, current_timing_status);
+    }
+
+    function setTimer(t, tt, i) {
+      current_time = t;
+      total_duration = tt;
+      repeatTime = i;
+    }
+
+    function checkLagori(team) {
+      if (team == 1) {  // red
+        if (redTeamLagoriPileCount == 5 && updated_once_1) { setTimer(0, 0, 1); updated_once_1 = false; updated_once = true; pileStage = false; }
+        else if (redTeamLagoriBreakCount == 5 && updated_once) { play("stop"); pileStage = true; updated_once = false; }
+      }
+      else {            // blue
+        if (blueTeamLagoriPileCount == 5 && updated_once_1) { play("end"); pause("all"); }
+        else if (blueTeamLagoriBreakCount == 5 && updated_once) { play("stop"); pileStage = true; updated_once = false; }
+      }
+    }
+
+    function countdown(type, current_timing_status) {
+      document.getElementById("gameTimerFull").disabled = true;
+      document.getElementById("gameTimerGame").disabled = true;
+      document.getElementById("gameTimerPractice").disabled = true;
+      switch (type) {
+        case "full":
+          document.getElementById("pauseFull").disabled = false;
+          // document.getElementById("resetGame").disabled = true;
+          // document.getElementById("resetPractice").disabled = true;
+          break;
+        case "game":
+          document.getElementById("pauseGame").disabled = false;
+          // document.getElementById("resetFull").disabled = true;
+          // document.getElementById("resetPractice").disabled = true;
+          break;
+        case "practice":
+          document.getElementById("pausePractice").disabled = false;
+          // document.getElementById("resetGame").disabled = true;
+          // document.getElementById("resetFull").disabled = true;
+          break;
+      }
+      updateTimer(type);
+      function updateTimer(type) {
+        document.getElementById("status").innerHTML = master_timing_status;
+        checkLagori(repeatTime);
+        if (isEnd) document.getElementById("status").innerHTML = "Game End";
+        if (current_time == 0 && total_duration == 0) {
+          play("end");
+          if (type == 'full' && repeatTime > 0) {
+            repeatTime -= 1;
+            current_time = 60;
+            total_duration = 150;
+            updated_once = true;
+            updated_once_1 = true;
+            master_timer = setTimeout(updateTimer, 1000, type);
+          }
+          else if (type == 'game' && repeatTime > 0) {
+            repeatTime -= 1;
+            current_time = 60;
+            total_duration = 150;
+            updated_once = true;
+            updated_once_1 = true;
+            master_timer = setTimeout(updateTimer, 1000, type);
+          }
+          else {
+            document.getElementById("pauseFull").disabled = true;
+            document.getElementById("pauseGame").disabled = true;
+            document.getElementById("pausePractice").disabled = true;
+            reset();
+          }
+        }
+        else if (current_time == 0 && total_duration > 0) {
+          current_time = total_duration;
+          time_used = 0;
+          master_timing_status = "Game Time Remaining..."
+
+          document.getElementById("timer").style.color = "black";
+          document.getElementById("timer").innerHTML = current_time;
+          document.getElementById("timer_unit").style.color = "black";
+          document.getElementById("timer_unit").innerHTML = "sec";
+
+          master_timer = setTimeout(updateTimer, 1000, type);
+
+          current_time--;
+          total_duration--;
+          time_used++;
+        }
+        else if (current_time <= 10 && total_duration > 0) {
+          document.getElementById("timer").style.color = "red";
+          document.getElementById("timer").innerHTML = current_time;
+          document.getElementById("timer_unit").style.color = "red";
+          document.getElementById("timer_unit").innerHTML = "sec";
+          play("beep");
+
+          master_timer = setTimeout(updateTimer, 1000, type);
+
+          current_time--;
+          total_duration--;
+          time_used++;
+        }
+        else if (isPause) {
+          document.getElementById("timer").style.color = "black";
+          document.getElementById("timer").innerHTML = current_time;
+          document.getElementById("timer_unit").style.color = "black";
+          document.getElementById("timer_unit").innerHTML = "sec";
+          if (current_time == 60 && current_time == total_duration) { pileStage = true; play("stop"); }
+          if (current_time <= 60 && current_time != total_duration) {
+            document.getElementById("redLagoriBreak").disabled = true;
+            document.getElementById("redLagoriPile").disabled = true;
+            document.getElementById("redShotButton").disabled = true;
+            document.getElementById("blueLagoriBreak").disabled = true;
+            document.getElementById("blueLagoriPile").disabled = true;
+            document.getElementById("blueShotButton").disabled = true;
+          }
+          else if (!pileStage && repeatTime == 1) {
+            document.getElementById("redLagoriBreak").disabled = false;
+            document.getElementById("redLagoriPile").disabled = true;
+            document.getElementById("redShotButton").disabled = true;
+            document.getElementById("blueLagoriBreak").disabled = true;
+            document.getElementById("blueLagoriPile").disabled = true;
+            document.getElementById("blueShotButton").disabled = true;
+          }
+          else if (pileStage && repeatTime == 1) {
+            document.getElementById("redLagoriBreak").disabled = true;
+            document.getElementById("redLagoriPile").disabled = false;
+            document.getElementById("redShotButton").disabled = false;
+            document.getElementById("blueLagoriBreak").disabled = true;
+            document.getElementById("blueLagoriPile").disabled = true;
+            document.getElementById("blueShotButton").disabled = true;
+          }
+          else if (!pileStage && repeatTime == 0) {
+            document.getElementById("redLagoriBreak").disabled = true;
+            document.getElementById("redLagoriPile").disabled = true;
+            document.getElementById("redShotButton").disabled = true;
+            document.getElementById("blueLagoriBreak").disabled = false;
+            document.getElementById("blueLagoriPile").disabled = true;
+            document.getElementById("blueShotButton").disabled = true;
+          }
+          else if (pileStage && repeatTime == 0) {
+            document.getElementById("redLagoriBreak").disabled = true;
+            document.getElementById("redLagoriPile").disabled = true;
+            document.getElementById("redShotButton").disabled = true;
+            document.getElementById("blueLagoriBreak").disabled = true;
+            document.getElementById("blueLagoriPile").disabled = false;
+            document.getElementById("blueShotButton").disabled = false;
+          }
+          master_timer = setTimeout(updateTimer, 1000, type);
+
+          current_time--;
+          total_duration--;
+          time_used++;
+        }
+      }
+    }
+    function shotByOther(team) {
+      showTime(team);
+      if (team == 'red') {
+        setTimer(0, 0, 1);
+        pileStage = false;
+      }
+      else {
+        isPause = false;
+        play("end");
+        pause("all");
+        pileStage = false;
+      }
+    }
+
+    function pause(type) {
+      if (current_time != 0) {
+        if (isPause) {
+          switch (type) {
+            case "full":
+              document.getElementById("pauseFull").innerHTML = "Resume";
+              document.getElementById("status").innerHTML = master_timing_status + " (pause)";
+              isPause = false;
+              clearTimeout(master_timer);
+              break;
+            case "game":
+              document.getElementById("pauseGame").innerHTML = "Resume";
+              document.getElementById("status").innerHTML = master_timing_status + " (pause)";
+              isPause = false;
+              clearTimeout(master_timer);
+              break;
+            case "practice":
+              document.getElementById("pausePractice").innerHTML = "Resume";
+              document.getElementById("status").innerHTML = master_timing_status + " (pause)";
+              isPause = false;
+              clearTimeout(master_timer);
+              break;
+            case "all":
+              countdown("practice", master_timing_status);
+              document.getElementById("status").innerHTML = "Game End";
+              isEnd = true;
+              break;
+          }
+
+        }
+        else {
+          switch (type) {
+            case "full":
+              document.getElementById("pauseFull").innerHTML = "Pause";
+              document.getElementById("status").innerHTML = master_timing_status;
+              isPause = true;
+              countdown(type, master_timing_status);
+              break;
+            case "game":
+              document.getElementById("pauseGame").innerHTML = "Pause";
+              document.getElementById("status").innerHTML = master_timing_status;
+              isPause = true;
+              countdown(type, master_timing_status);
+              break;
+            case "practice":
+              document.getElementById("pausePractice").innerHTML = "Pause";
+              document.getElementById("status").innerHTML = master_timing_status;
+              isPause = true;
+              countdown(type, master_timing_status);
+              break;
+            case "all":
+              countdown("practice", master_timing_status);
+              isEnd = true;
+              break;
+          }
+        }
+      }
+    }
+
+    function newGame() {
+      redTeamScore = 0;
+      blueTeamScore = 0;
+
+      redTeamLagoriBreakCount = 0;
+      blueTeamLagoriBreakCount = 0;
+      redTeamLagoriPileCount = 0;
+      blueTeamLagoriPileCount = 0;
+
+      document.getElementById("redTeamScore").innerHTML = redTeamScore;
+      document.getElementById("blueTeamScore").innerHTML = blueTeamScore;
+
+      document.getElementById("redLagoriBreak").disabled = false;
+      document.getElementById("redLagoriPile").disabled = false;
+      document.getElementById("blueLagoriBreak").disabled = false;
+      document.getElementById("blueLagoriPile").disabled = false;
+
+      document.getElementById("redLagoriBreakNum").innerHTML = "&nbsp;";
+      document.getElementById("redLagoriBreakAll").innerHTML = "&nbsp;";
+      document.getElementById("blueLagoriBreakNum").innerHTML = "&nbsp;";
+      document.getElementById("blueLagoriBreakAll").innerHTML = "&nbsp;";
+
+      document.getElementById("redLagoriPileNum").innerHTML = "&nbsp;";
+      document.getElementById("redLagoriPileAll").innerHTML = "&nbsp;";
+      document.getElementById("blueLagoriPileNum").innerHTML = "&nbsp;";
+      document.getElementById("blueLagoriPileAll").innerHTML = "&nbsp;";
+
+      document.getElementById("redTeamPerfectLagori").innerHTML = "&nbsp;";
+      document.getElementById("blueTeamPerfectLagori").innerHTML = "&nbsp;";
+
+      document.getElementById("redTeamShot").innerHTML = "&nbsp;";
+      document.getElementById("blueTeamShot").innerHTML = "&nbsp;";
+
+      reset();
+    }
+
+    function play(fld) {
+      switch (fld) {
+        case "beep":
+          var audio = document.getElementById("audio_beep");
+          break;
+        case "stop":
+          var audio = document.getElementById("audio_stop");
+          break;
+        case "winning":
+          var audio = document.getElementById("audio_winning");
+          break;
+        case "end":
+          var audio = document.getElementById("audio_end");
+          break;
+      }
+      audio.play();
+    }
+
+  </script>
+</body>
+
+</html>
